@@ -36,7 +36,7 @@ To run this project locally on your machine, follow these steps:
 
 ### 1. Clone the repository
 
-git clone [https://github.com/your-username/your-repo-name.git](https://github.com/your-username/your-repo-name.git)
+git clone [https://github.com/your-username/your-repo-name.git](https://github.com/rachitamajde09/Employee-Management-system)
 2. Install dependencies
 Navigate to the project directory and run:
 
