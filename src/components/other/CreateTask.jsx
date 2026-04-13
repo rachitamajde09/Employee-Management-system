@@ -1,5 +1,7 @@
 import React, { useContext, useState } from 'react'
 import { AuthContext } from '../../context/AuthProvider'
+import { doc, updateDoc } from 'firebase/firestore'
+import { db } from '../../firebase'
 
 const CreateTask = () => {
     const [userData, setUserData] = useContext(AuthContext)
@@ -10,7 +12,6 @@ const CreateTask = () => {
     const [asignTo, setAsignTo] = useState('')
     const [category, setCategory] = useState('')
 
-    // This is the updated submitHandler that fixes the bug
     const submitHandler = (e) => {
         e.preventDefault()
 
@@ -27,20 +28,14 @@ const CreateTask = () => {
         })
 
         if (!employeeFound) {
-            // FIRE ERROR TOAST
-            window.dispatchEvent(new CustomEvent('show-notification', { 
-                detail: { message: `Operative "${asignTo}" not found in database.`, type: 'error' } 
-            }));
+            window.dispatchEvent(new CustomEvent('show-notification', { detail: { message: `Operative "${asignTo}" not found in database.`, type: 'error' } }));
             return;
         }
         
         setUserData(data)
-        localStorage.setItem('employees', JSON.stringify(data))
-
-        // FIRE SUCCESS TOAST
-        window.dispatchEvent(new CustomEvent('show-notification', { 
-            detail: { message: `Task deployed successfully to ${asignTo}.`, type: 'success' } 
-        }));
+        updateDoc(doc(db, "ems", "companyData"), { employees: data })
+        
+        window.dispatchEvent(new CustomEvent('show-notification', { detail: { message: `Task deployed successfully to ${asignTo}.`, type: 'success' } }));
 
         setTaskTitle('')
         setCategory('')
@@ -48,10 +43,12 @@ const CreateTask = () => {
         setTaskDate('')
         setTaskDescription('')
     }
+
     return (
-        <div className='bg-white/[0.03] backdrop-blur-[40px] border border-white/[0.08] p-8 mt-10 rounded-[2rem] shadow-[0_0_40px_rgba(0,0,0,0.5)]'>
-            <form onSubmit={submitHandler} className='flex flex-wrap w-full items-start justify-between gap-6'>
-                <div className='w-1/2 flex flex-col space-y-4'>
+        <div className='bg-white/[0.03] backdrop-blur-[40px] border border-white/[0.08] p-5 sm:p-8 mt-10 rounded-[2rem] shadow-[0_0_40px_rgba(0,0,0,0.5)]'>
+            {/* Switched to flex-col for mobile, lg:flex-row for desktop */}
+            <form onSubmit={submitHandler} className='flex flex-col lg:flex-row w-full items-start justify-between gap-6 lg:gap-10'>
+                <div className='w-full lg:w-1/2 flex flex-col space-y-4'>
                     <div>
                         <h3 className='text-xs font-mono text-cyan-400/80 mb-2 uppercase tracking-widest'>Task Title</h3>
                         <input value={taskTitle} onChange={(e) => setTaskTitle(e.target.value)} required
@@ -74,10 +71,10 @@ const CreateTask = () => {
                     </div>
                 </div>
 
-                <div className='flex-1 flex flex-col'>
+                <div className='w-full lg:w-1/2 flex flex-col'>
                     <h3 className='text-xs font-mono text-cyan-400/80 mb-2 uppercase tracking-widest'>Description</h3>
                     <textarea value={taskDescription} onChange={(e) => setTaskDescription(e.target.value)} required
-                        className='w-full h-56 bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white outline-none focus:bg-white/10 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all resize-none placeholder:text-gray-600' placeholder='Detailed task instructions...'></textarea>
+                        className='w-full h-40 lg:h-56 bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white outline-none focus:bg-white/10 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all resize-none placeholder:text-gray-600' placeholder='Detailed task instructions...'></textarea>
                     
                     <button className='group relative w-full mt-6 overflow-hidden rounded-xl'>
                         <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-cyan-600 via-purple-600 to-cyan-600 bg-[length:200%_auto] animate-gradient"></div>
