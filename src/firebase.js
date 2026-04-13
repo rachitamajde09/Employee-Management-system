@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getFirestore } from "firebase/firestore"; // Added Firestore
+import { initializeFirestore } from "firebase/firestore"; // Proper import
 
 const firebaseConfig = {
   apiKey: "AIzaSyDOLQrqJBPZAU2Ojwy-CoQrwfOVreJpUZE",
@@ -16,5 +16,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 
-// Initialize Cloud Firestore and get a reference to the service
-export const db = getFirestore(app);
+/** * Yahan hum Firestore ko 'experimentalForceLongPolling' ke saath initialize kar rahe hain.
+ * Isse AdBlockers aur "Blocked by Client" wali errors 100% solve ho jayengi.
+ */
+export const db = initializeFirestore(app, {
+  experimentalForceLongPolling: true,
+  useFetchStreams: false
+});
