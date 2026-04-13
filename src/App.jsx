@@ -13,14 +13,14 @@ const App = () => {
   const [notification, setNotification] = useState(null);
 
   useEffect(() => {
+    // Professional Console Branding
     console.log(
-        "%c ENGINEERED BY RACHITA MAJDE %c v2.4.0 ",
-        "background: #06b6d4; color: #fff; padding: 5px; border-radius: 3px; font-weight: bold; font-family: monospace;",
-        "background: #1e293b; color: #94a3b8; padding: 5px; border-radius: 3px; font-family: monospace;"
+        "%c ⚡ CORE SYSTEM ONLINE %c Developed by Rachita Majde ",
+        "background: #06b6d4; color: #fff; padding: 5px; border-radius: 3px 0 0 3px; font-weight: bold;",
+        "background: #1e293b; color: #94a3b8; padding: 5px; border-radius: 0 3px 3px 0;"
     );
 
     const loggedInUser = localStorage.getItem('loggedInUser')
-    
     if (loggedInUser) {
       const parsedData = JSON.parse(loggedInUser)
       setUser(parsedData.role)
@@ -33,7 +33,6 @@ const App = () => {
     };
     window.addEventListener('show-notification', handleNotify);
     return () => window.removeEventListener('show-notification', handleNotify);
-
   }, [])
 
   const handleLogin = (email, password) => {
@@ -51,42 +50,53 @@ const App = () => {
         alert("Invalid Credentials")
       }
     } else {
-      alert("Database Syncing... Please wait a second and try again.")
+      alert("Database Syncing... Please wait.")
     }
   }
 
   return (
-    <div className="h-screen w-screen bg-[#050505] overflow-hidden">
+    <div className="h-screen w-screen bg-[#050505] flex flex-col overflow-hidden selection:bg-cyan-500/30 font-sans">
       
-      <main className="h-full w-full overflow-y-auto">
+      {/* Background Subtle Grid */}
+      <div className="absolute inset-0 bg-[radial-gradient(#ffffff05_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none"></div>
+
+      <main className="flex-1 overflow-y-auto relative z-10">
         {!user ? <Login handleLogin={handleLogin} /> : ''}
         {user == 'admin' ? <AdminDashboard changeUser={setUser} /> : (user == 'employee' ? <EmployeeDashboard changeUser={setUser} data={loggedInUserData} /> : null) }
       </main>
 
-      {/* Global Footer - Fixed at bottom so no scroll is needed */}
-      <footer className="fixed bottom-0 left-0 w-full py-4 z-[100] pointer-events-none">
-          <p className="text-[10px] font-mono text-gray-600 uppercase tracking-[0.5em] text-center">
-              © 2026 Core System — Engineered by <span className="text-white/40 font-black">Rachita Majde</span>
-          </p>
-      </footer>
+      {/* Cyberpunk Status Bar - The Rachita Majde Signature */}
+      <div className="relative z-50 w-full bg-black/80 backdrop-blur-md border-t border-white/5 px-6 py-2.5 flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
+            <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse shadow-[0_0_8px_#06b6d4]"></div>
+            <span className="text-[9px] font-mono text-cyan-500/80 uppercase tracking-[0.2em]">Matrix Active</span>
+          </div>
+          <span className="text-white/5 text-xs">|</span>
+          <span className="text-[9px] font-mono text-white/20 uppercase tracking-widest hidden sm:block">Sync: v2.4.0</span>
+        </div>
+
+        {/* Developer Credit - Stylized Badge */}
+        <div className="absolute left-1/2 -translate-x-1/2 flex items-center group cursor-crosshair">
+          <span className="text-[8px] font-mono text-white/20 uppercase tracking-[0.4em] mr-3">Dev</span>
+          <div className="px-4 py-1 bg-white/5 border border-white/10 rounded-full group-hover:border-cyan-500/40 group-hover:bg-cyan-500/5 transition-all duration-500">
+             <span className="text-[10px] font-black text-white/40 group-hover:text-white tracking-[0.3em] uppercase">
+                Rachita Majde
+             </span>
+          </div>
+        </div>
+
+        <div className="hidden md:block">
+           <span className="text-[9px] font-mono text-white/20 uppercase tracking-widest">Local Node: 2026.04.13</span>
+        </div>
+      </div>
 
       {/* Notification Toast */}
       {notification && (
-        <div className={`fixed bottom-10 right-10 z-[9999] px-6 py-4 rounded-2xl border backdrop-blur-xl shadow-2xl transition-all duration-500 flex items-center space-x-4 animate-bounce-in
-            ${notification.type === 'success' 
-                ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400 shadow-emerald-500/10' 
-                : 'bg-red-500/10 border-red-500/40 text-red-400 shadow-red-500/10'}`}>
-            
-            <div className={`w-2.5 h-2.5 rounded-full animate-pulse ${notification.type === 'success' ? 'bg-emerald-400' : 'bg-red-400'}`}></div>
-            
-            <div className="flex flex-col">
-                <p className="font-mono text-[10px] uppercase tracking-[0.3em] opacity-50 mb-0.5">System Message</p>
-                <p className="font-bold text-xs uppercase tracking-widest">{notification.message}</p>
-            </div>
-            
-            <button onClick={() => setNotification(null)} className="ml-4 opacity-40 hover:opacity-100 transition-opacity pointer-events-auto">
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
+        <div className={`fixed bottom-16 right-6 z-[9999] px-5 py-3 rounded-xl border backdrop-blur-3xl shadow-2xl animate-bounce-in flex items-center space-x-3 
+            ${notification.type === 'success' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-red-500/10 border-red-500/30 text-red-400'}`}>
+            <div className={`w-1.5 h-1.5 rounded-full ${notification.type === 'success' ? 'bg-emerald-400' : 'bg-red-400'} animate-pulse`}></div>
+            <p className="font-mono text-[10px] uppercase tracking-widest font-bold">{notification.message}</p>
         </div>
       )}
     </div>
