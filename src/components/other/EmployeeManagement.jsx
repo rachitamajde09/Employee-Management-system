@@ -50,9 +50,15 @@ const EmployeeManagement = () => {
             setUserData(updatedData)
             
             // Notification logic as it was
-            window.dispatchEvent(new CustomEvent('show-notification', { 
-                detail: { message: 'Operative profile terminated.', type: 'warning' } 
-            }))
+            // Pehle alert("Operative Profile Initialized in Cloud!") ko hatao
+// Aur uski jagah ye code daalo:
+
+window.dispatchEvent(new CustomEvent('show-notification', { 
+    detail: { 
+        message: 'SYSTEM: Operative profile successfully initialized in cloud matrix.', 
+        type: 'success' 
+    } 
+}));
         } catch (error) {
             console.error("Error removing employee:", error)
         }
