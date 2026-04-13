@@ -21,5 +21,7 @@ const analytics = getAnalytics(app);
  */
 export const db = initializeFirestore(app, {
   experimentalForceLongPolling: true,
-  useFetchStreams: false
+  useFetchStreams: false,
+  // Isse live browser cache ke conflicts khatam ho jayenge
+  localCache: undefined 
 });
