@@ -148,6 +148,13 @@ const Login = ({ handleLogin }) => {
                 </div>
 
             </div>
+
+            {/* 🔥 MADE BY RACHITA MAJDE - Sleek Bottom Signature */}
+            <div className="absolute bottom-6 left-0 right-0 text-center pointer-events-none">
+                <p className="text-[10px] font-mono text-gray-600 uppercase tracking-[0.5em] transition-all duration-700 hover:tracking-[0.7em] hover:text-cyan-500/50">
+                    Engineered by <span className="text-white/40 font-black">Rachita Majde</span>
+                </p>
+            </div>
         </div>
     )
 }
