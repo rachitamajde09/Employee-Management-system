@@ -13,13 +13,6 @@ const App = () => {
   const [notification, setNotification] = useState(null);
 
   useEffect(() => {
-    // Professional Console Branding
-    console.log(
-        "%c ⚡ CORE SYSTEM ONLINE %c Developed by Rachita Majde ",
-        "background: #06b6d4; color: #fff; padding: 5px; border-radius: 3px 0 0 3px; font-weight: bold;",
-        "background: #1e293b; color: #94a3b8; padding: 5px; border-radius: 0 3px 3px 0;"
-    );
-
     const loggedInUser = localStorage.getItem('loggedInUser')
     if (loggedInUser) {
       const parsedData = JSON.parse(loggedInUser)
@@ -65,38 +58,42 @@ const App = () => {
         {user == 'admin' ? <AdminDashboard changeUser={setUser} /> : (user == 'employee' ? <EmployeeDashboard changeUser={setUser} data={loggedInUserData} /> : null) }
       </main>
 
-      {/* Cyberpunk Status Bar - The Rachita Majde Signature */}
-      <div className="relative z-50 w-full bg-black/80 backdrop-blur-md border-t border-white/5 px-6 py-2.5 flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2">
-            <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse shadow-[0_0_8px_#06b6d4]"></div>
-            <span className="text-[9px] font-mono text-cyan-500/80 uppercase tracking-[0.2em]">Matrix Active</span>
-          </div>
-          <span className="text-white/5 text-xs">|</span>
-          <span className="text-[9px] font-mono text-white/20 uppercase tracking-widest hidden sm:block">Sync: v2.4.0</span>
+      {/* Responsive Cyberpunk Status Bar */}
+      <div className="relative z-50 w-full bg-black/80 backdrop-blur-md border-t border-white/5 px-4 sm:px-6 py-3 flex items-center justify-between">
+        
+        {/* Left: System Status */}
+        <div className="flex items-center space-x-2">
+          <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse shadow-[0_0_8px_#06b6d4]"></div>
+          <span className="text-[8px] sm:text-[9px] font-mono text-cyan-500/80 uppercase tracking-widest">Active</span>
         </div>
 
-        {/* Developer Credit - Stylized Badge */}
-        <div className="absolute left-1/2 -translate-x-1/2 flex items-center group cursor-crosshair">
-          <span className="text-[8px] font-mono text-white/20 uppercase tracking-[0.4em] mr-3">Dev</span>
-          <div className="px-4 py-1 bg-white/5 border border-white/10 rounded-full group-hover:border-cyan-500/40 group-hover:bg-cyan-500/5 transition-all duration-500">
-             <span className="text-[10px] font-black text-white/40 group-hover:text-white tracking-[0.3em] uppercase">
+        {/* Center: Stylized Developer Badge (Mobile Optimized) */}
+        <div className="flex items-center group">
+          <span className="hidden xs:block text-[8px] font-mono text-white/20 uppercase tracking-[0.3em] mr-2">Dev</span>
+          <div className="px-3 py-1 bg-white/5 border border-white/10 rounded-full group-hover:border-cyan-500/40 transition-all duration-500">
+             <span className="text-[9px] sm:text-[10px] font-black text-white/40 group-hover:text-white tracking-[0.2em] sm:tracking-[0.3em] uppercase transition-colors">
                 Rachita Majde
              </span>
           </div>
         </div>
 
-        <div className="hidden md:block">
-           <span className="text-[9px] font-mono text-white/20 uppercase tracking-widest">Local Node: 2026.04.13</span>
+        {/* Right: Version/Date (Hidden on very small screens) */}
+        <div className="hidden sm:block">
+           <span className="text-[9px] font-mono text-white/20 uppercase tracking-widest">v2.4.0</span>
+        </div>
+        
+        {/* Small Date for mobile only if space allows */}
+        <div className="sm:hidden text-[8px] font-mono text-white/10 tracking-tighter">
+          2026.04
         </div>
       </div>
 
-      {/* Notification Toast */}
+      {/* Notification Toast (Mobile Adjusted) */}
       {notification && (
-        <div className={`fixed bottom-16 right-6 z-[9999] px-5 py-3 rounded-xl border backdrop-blur-3xl shadow-2xl animate-bounce-in flex items-center space-x-3 
+        <div className={`fixed bottom-16 right-4 left-4 sm:left-auto sm:right-6 z-[9999] px-4 py-3 rounded-xl border backdrop-blur-3xl shadow-2xl animate-bounce-in flex items-center space-x-3 
             ${notification.type === 'success' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-red-500/10 border-red-500/30 text-red-400'}`}>
             <div className={`w-1.5 h-1.5 rounded-full ${notification.type === 'success' ? 'bg-emerald-400' : 'bg-red-400'} animate-pulse`}></div>
-            <p className="font-mono text-[10px] uppercase tracking-widest font-bold">{notification.message}</p>
+            <p className="font-mono text-[9px] sm:text-[10px] uppercase tracking-widest font-bold">{notification.message}</p>
         </div>
       )}
     </div>
