@@ -1,17 +1,17 @@
 import React, { useContext, useState } from 'react'
 import { AuthContext } from '../../context/AuthProvider'
+import { doc, updateDoc } from 'firebase/firestore' // Firebase imports add kiye
+import { db } from '../../firebase'
 
 const EmployeeManagement = () => {
-    // Note: Assuming your AuthProvider exports [userData, setUserData]
     const [userData, setUserData] = useContext(AuthContext) 
     const [firstName, setFirstName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
-    const submitHandler = (e) => {
+    const submitHandler = async (e) => { // async add kiya
         e.preventDefault()
         
-        // Auto-generate a new ID
         const newId = userData && userData.length > 0 ? Math.max(...userData.map(u => u.id || 0)) + 1 : 1;
 
         const newEmployee = {
@@ -24,32 +24,44 @@ const EmployeeManagement = () => {
         }
 
         const updatedData = [...(userData || []), newEmployee];
-        setUserData(updatedData)
-        localStorage.setItem('employees', JSON.stringify(updatedData)) // Update local storage
 
-        setFirstName('')
-        setEmail('')
-        setPassword('')
-        const removeEmployee = (idToRemove) => {
+        // 🔥 Cloud aur State Update logic
+        try {
+            const docRef = doc(db, "ems", "companyData")
+            await updateDoc(docRef, { employees: updatedData })
+            setUserData(updatedData) // State tabhi update hogi jab cloud pe save ho jaye
+            
+            setFirstName('')
+            setEmail('')
+            setPassword('')
+            alert("Operative Profile Initialized in Cloud!")
+        } catch (error) {
+            console.error("Error adding employee:", error)
+            alert("Cloud sync failed. Check console.")
+        }
+    }
+
+    const removeEmployee = async (idToRemove) => { // async add kiya
         const updatedData = userData.filter(emp => emp.id !== idToRemove);
-        setUserData(updatedData);
-        localStorage.setItem('employees', JSON.stringify(updatedData));
         
-        // Trigger Warning Notification!
-        window.dispatchEvent(new CustomEvent('show-notification', { detail: { message: 'Operative profile terminated.', type: 'warning' } }))
-    }
-    }
-
-    const removeEmployee = (idToRemove) => {
-        const updatedData = userData.filter(emp => emp.id !== idToRemove);
-        setUserData(updatedData);
-        localStorage.setItem('employees', JSON.stringify(updatedData));
+        try {
+            const docRef = doc(db, "ems", "companyData")
+            await updateDoc(docRef, { employees: updatedData })
+            setUserData(updatedData)
+            
+            // Notification logic as it was
+            window.dispatchEvent(new CustomEvent('show-notification', { 
+                detail: { message: 'Operative profile terminated.', type: 'warning' } 
+            }))
+        } catch (error) {
+            console.error("Error removing employee:", error)
+        }
     }
 
     return (
         <div className='flex flex-wrap gap-8 mt-6'>
             
-            {/* Registration Form Panel */}
+            {/* Registration Form Panel - NO UI CHANGE */}
             <div className='w-full lg:w-[35%] bg-white/[0.03] backdrop-blur-[40px] border border-white/[0.08] p-8 rounded-[2rem] shadow-[0_0_40px_rgba(0,0,0,0.5)]'>
                 <div className="flex items-center space-x-3 mb-8">
                     <div className="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center border border-cyan-500/30">
@@ -84,7 +96,7 @@ const EmployeeManagement = () => {
                 </form>
             </div>
 
-            {/* Active Employees Matrix (List) */}
+            {/* Active Employees Matrix - NO UI CHANGE */}
             <div className='w-full lg:flex-1 bg-white/[0.03] backdrop-blur-[40px] border border-white/[0.08] p-8 rounded-[2rem] shadow-[0_0_40px_rgba(0,0,0,0.5)]'>
                 <div className="flex items-center space-x-3 mb-8">
                     <div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center border border-purple-500/30">
@@ -122,7 +134,6 @@ const EmployeeManagement = () => {
                     )}
                 </div>
             </div>
-
         </div>
     )
 }
