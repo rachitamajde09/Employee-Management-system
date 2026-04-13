@@ -1,45 +1,56 @@
-import React, { useContext, useState } from 'react'
-import { AuthContext } from '../../context/AuthProvider'
+import React, { useState, useContext } from 'react'
 import { doc, updateDoc } from 'firebase/firestore'
 import { db } from '../../firebase'
+import { AuthContext } from '../../context/AuthProvider'
 
 const CreateTask = () => {
+
     const [userData, setUserData] = useContext(AuthContext)
-    
+
+    // YE STATES DEFINE KARNA ZAROORI HAI
     const [taskTitle, setTaskTitle] = useState('')
     const [taskDescription, setTaskDescription] = useState('')
     const [taskDate, setTaskDate] = useState('')
-    const [asignTo, setAsignTo] = useState('')
+    const [assignTo, setAssignTo] = useState('')
     const [category, setCategory] = useState('')
 
-    const submitHandler = (e) => {
+    const submitHandler = async (e) => {
         e.preventDefault()
 
-        const taskDetails = { taskTitle, taskDescription, taskDate, category, active: false, newTask: true, failed: false, completed: false }
+        const newTask = { 
+            taskTitle, 
+            taskDescription, 
+            taskDate, 
+            category, 
+            active: false, 
+            newTask: true, 
+            failed: false, 
+            completed: false 
+        }
+
         const data = [...userData]
 
-        let employeeFound = false;
         data.forEach(function (elem) {
-            if (asignTo === elem.firstName) {
-                elem.tasks.push(taskDetails)
+            if (assignTo == elem.firstName) {
+                elem.tasks.push(newTask)
                 elem.taskCounts.newTask = elem.taskCounts.newTask + 1
-                employeeFound = true;
             }
         })
 
-        if (!employeeFound) {
-            window.dispatchEvent(new CustomEvent('show-notification', { detail: { message: `Operative "${asignTo}" not found in database.`, type: 'error' } }));
-            return;
-        }
-        
         setUserData(data)
-        updateDoc(doc(db, "ems", "companyData"), { employees: data })
         
-        window.dispatchEvent(new CustomEvent('show-notification', { detail: { message: `Task deployed successfully to ${asignTo}.`, type: 'success' } }));
+        // Cloud par update
+        try {
+            await updateDoc(doc(db, "ems", "companyData"), { employees: data })
+            console.log("Task Deployed to Cloud")
+        } catch (err) {
+            console.error("Error updating cloud:", err)
+        }
 
+        // Form clear karein
         setTaskTitle('')
         setCategory('')
-        setAsignTo('')
+        setAssignTo('')
         setTaskDate('')
         setTaskDescription('')
     }
