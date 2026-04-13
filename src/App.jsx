@@ -22,25 +22,28 @@ const App = () => {
   },[])
 
   const handleLogin = (email, password) => {
-    if (email === 'admin@me.com' && password === '123') {
+    // 1. Admin Check (Static)
+    if (email == 'admin@me.com' && password == '123') {
       setUser('admin')
       localStorage.setItem('loggedInUser', JSON.stringify({ role: 'admin' }))
-      // Trigger Welcome Notification
-      window.dispatchEvent(new CustomEvent('show-notification', { detail: { message: 'Admin Override Accepted', type: 'success' } }))
-    } else if (userData) {
-      const employee = userData.find((e) => email === e.email && e.password === password)
+    } 
+    // 2. Employee Check (Live Data from Firebase)
+    else if (userData) {
+      // Hum userData (Firebase array) mein us employee ko dhundenge
+      const employee = userData.find((e) => email == e.email && password == e.password)
+      
       if (employee) {
         setUser('employee')
         setLoggedInUserData(employee)
         localStorage.setItem('loggedInUser', JSON.stringify({ role: 'employee', data: employee }))
-        // Trigger Welcome Notification
-        window.dispatchEvent(new CustomEvent('show-notification', { detail: { message: `Welcome back, ${employee.firstName}`, type: 'success' } }))
       } else {
-        // Trigger Error Notification
-        window.dispatchEvent(new CustomEvent('show-notification', { detail: { message: 'Invalid Credentials', type: 'error' } }))
+        alert("Invalid Credentials")
       }
+    } 
+    else {
+      alert("Invalid Credentials")
     }
-  }
+}
 
   return (
     <>
